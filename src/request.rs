@@ -436,13 +436,13 @@ impl ParsedRequest {
         if self.config.headers.contains_key("Host") {
             write!(
                 http,
-                "{} {} HTTP/1.1\r\n",
+                "{} {} HTTP/1.1",
                 self.config.method, self.url.path_and_query
             ).unwrap();
         } else {
             write!(
                 http,
-                "{} {} HTTP/1.1\r\nHost: {}\r\n",
+                "{} {} HTTP/1.1\r\nHost: {}",
                 self.config.method, self.url.path_and_query, self.url.host
             ).unwrap();
             if let Port::Explicit(port) = self.url.port {
