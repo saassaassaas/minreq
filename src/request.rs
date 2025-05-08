@@ -433,15 +433,23 @@ impl ParsedRequest {
         //   sent in requests..."
 
         // Add the request line and the "Host" header
-        write!(
-            http,
-            "{} {} HTTP/1.1\r\nHost: {}",
-            self.config.method, self.url.path_and_query, self.url.host
-        )
-        .unwrap();
-        if let Port::Explicit(port) = self.url.port {
-            write!(http, ":{}", port).unwrap();
+        if self.config.headers.contains_key("Host") {
+            write!(
+                http,
+                "{} {} HTTP/1.1\r\n",
+                self.config.method, self.url.path_and_query
+            ).unwrap();
+        } else {
+            write!(
+                http,
+                "{} {} HTTP/1.1\r\nHost: {}\r\n",
+                self.config.method, self.url.path_and_query, self.url.host
+            ).unwrap();
+            if let Port::Explicit(port) = self.url.port {
+                write!(http, ":{}", port).unwrap();
+            }
         }
+        
         http += "\r\n";
 
         // Add other headers
